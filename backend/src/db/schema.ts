@@ -7,7 +7,10 @@ export const users = pgTable('user', {
   name: text('name').notNull().unique(),
   imageUrl: text('image_url'),
   createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
-  updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { mode: 'date' })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 export const products = pgTable('products', {
@@ -28,9 +31,10 @@ export const comments = pgTable('comments', {
   userId: text('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  productId: text('product_id')
+  productId: uuid('product_id')
     .notNull()
     .references(() => products.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
 });
 
 /**
